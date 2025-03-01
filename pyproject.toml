@@ -1,0 +1,18 @@
+[tool.poetry]
+name = "eliyahu-server"
+version = "0.1.0"
+description = ""
+authors = ["Israel Barmack <israel.bar.dev@gmail.com>"]
+license = "MIT"
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.12"
+fastapi = "^0.115.9"
+uvicorn = "^0.34.0"
+httpx = "^0.28.1"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
