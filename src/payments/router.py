@@ -1,4 +1,4 @@
-import logging
+from functools import cache
 from fastapi import APIRouter, Query, HTTPException
 import httpx
 from . import utils
@@ -8,6 +8,7 @@ router = APIRouter()
 
 
 @router.get("/donators")
+@cache(expire=60)
 async def read_donators(
     paginationType: str = Query("after", regex="^(after|before)$"),
     limit: int = Query(20, gt=0),
@@ -15,30 +16,25 @@ async def read_donators(
     startCursor: str = None,
     endCursor: str = None,
 ):
-    logging.debug("HEYYY" + ACCESS_TOKEN)
-
     curr_cursor = utils.set_cursor(paginationType, startCursor, endCursor)
     first_or_last = f"first: {limit}" if paginationType == "after" else "last: {limit}"
     curr_search_value = f" AND *{searchValue} " if searchValue else ""
     query_params = f"{first_or_last}, {paginationType}: {curr_cursor}, query: 'tag:donator{curr_search_value}'"
-
-    query = f"""
-    query {{
-      orders({query_params}) {{
-        edges {{
-          node {{
-            note
-          }}
-        }}
-        pageInfo {{
-          hasNextPage
-          hasPreviousPage
-          startCursor
-          endCursor
-        }}
-      }}
-    }}
-    """
+    pageInfo_params = (
+        """
+      hasNextPage
+      hasPreviousPage
+      startCursor
+      endCursor
+      """,
+    )
+    query = utils.set_query(
+        "query",
+        "orders",
+        query_params,
+        "note",
+        pageInfo_params=pageInfo_params,
+    )
     headers = {
         "Content-Type": "application/json",
         "X-Shopify-Access-Token": ACCESS_TOKEN,
@@ -55,16 +51,6 @@ async def read_donators(
     return response.json()
 
 
-@router.get("/payment")
-async def get_payment(data: dict):
-    return "payment"
-
-
 @router.post("/create_donator_checktout")
 async def create_checkout(data: dict):
     return "checkout"
-
-
-@router.post("/create_bundle_checkout")
-async def create_bundle_checkout(data: dict):
-    return "bundle_checkout"
