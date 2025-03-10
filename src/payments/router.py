@@ -16,16 +16,9 @@ async def read_donators(
 ):
     curr_cursor = utils.set_cursor(paginationType, startCursor, endCursor)
     first_or_last = f"first: {limit}" if paginationType == "after" else "last: {limit}"
-    curr_search_value = f" AND *{searchValue} " if searchValue else ""
-    query_params = f"{first_or_last}, {paginationType}: {curr_cursor}, query: 'tag:donator{curr_search_value}'"
-    pageInfo_params = (
-        """
-      hasNextPage
-      hasPreviousPage
-      startCursor
-      endCursor
-      """,
-    )
+    curr_search_value = f" AND *{searchValue}" if searchValue else ""
+    query_params = f"{first_or_last}, {paginationType}: {curr_cursor}, query: \"tag:'donator'{curr_search_value}\""
+    pageInfo_params = "hasNextPage hasPreviousPage startCursor endCursor"
     query = utils.set_query(
         "query",
         "orders",
@@ -46,6 +39,7 @@ async def read_donators(
             status_code=response.status_code, detail="Error from Shopify API"
         )
 
+    print(query)
     return response.json()
 
 
