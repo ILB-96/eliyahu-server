@@ -39,7 +39,6 @@ async def read_donators(
             status_code=response.status_code, detail="Error from Shopify API"
         )
 
-    print(query)
     return response.json()
 
 
