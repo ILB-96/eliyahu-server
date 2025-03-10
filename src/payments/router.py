@@ -20,7 +20,6 @@ async def read_donators(
     query_params = f"{first_or_last}, {paginationType}: {curr_cursor}, query: \"tag:'donator'{curr_search_value}\""
     pageInfo_params = "hasNextPage hasPreviousPage startCursor endCursor"
     query = utils.set_query(
-        "query",
         "orders",
         query_params,
         "note",
@@ -42,6 +41,48 @@ async def read_donators(
     return response.json()
 
 
-@router.post("/create_donator_checktout")
-async def create_checkout(data: dict):
-    return "checkout"
+@router.get("/draft_order")
+async def create_checkout(quantity: int=1, price: float=18, note: str='"{hey: what}"', tags: str='["test test test", "donator"]', id: str= "unknown",):
+                #     lineItems: [
+                #     {
+                #       generatePriceOverride: true,
+                #       variantId: "gid://shopify/ProductVariant/${productItem.id}",
+                #       quantity: ${formItems.length},
+                #       priceOverride: {amount: ${(total/formItems.length).toFixed(2)}, currencyCode: ILS}
+                #     },
+                #   ],
+
+    print("iasdasdasdasdasdd")
+    params = f"""
+    input: {{
+      lineItems: [{{
+        generatePriceOverride: true,
+        variantId: "gid://shopify/ProductVariant/{id}",
+        quantity: {quantity},
+        priceOverride: {{amount: {price}, currencyCode: ILS}}
+      }}],
+      note: {note},
+      tags: {tags}
+    }}
+    """
+    return_params = "draftOrder { invoiceUrl }"
+    query = utils.set_mutation(
+        "draftOrderCreate",
+        params,
+        return_params,
+    )
+    
+    headers = {
+        "Content-Type": "application/json",
+        "X-Shopify-Access-Token": ACCESS_TOKEN,
+    }
+
+    async with httpx.AsyncClient() as client:
+        response = await client.post(API_URL, headers=headers, json={"query": query})
+
+    if response.status_code != 200:
+        raise HTTPException(
+            status_code=response.status_code, detail="Error from Shopify API"
+        )
+
+    return response.json()
