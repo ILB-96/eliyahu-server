@@ -1,4 +1,3 @@
-from functools import cache
 from fastapi import APIRouter, Query, HTTPException
 import httpx
 from . import utils
@@ -8,7 +7,6 @@ router = APIRouter()
 
 
 @router.get("/donators")
-@cache(expire=60)
 async def read_donators(
     paginationType: str = Query("after", regex="^(after|before)$"),
     limit: int = Query(20, gt=0),
