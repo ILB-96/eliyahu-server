@@ -44,7 +44,6 @@ async def read_donators(
 @router.get("/draft_order")
 async def create_checkout(quantity: int=1, price: float=18.00, note: str='[{"f":"אהרון","m":"שני","g":"בן"}]', tags: str='["שני בן אהרון", "donator"]', id: str= "45136044949635",):
 
-    print("iasdasdasdasdasdd")
     params = f"""
     input: {{
       lineItems: [{{
@@ -53,7 +52,7 @@ async def create_checkout(quantity: int=1, price: float=18.00, note: str='[{"f":
         quantity: {quantity},
         priceOverride: {{amount: {price}, currencyCode: ILS}}
       }}],
-      note: "{note.replace('"', "'")}",
+      note: "{note.replace('"', '\\"')}",
       tags: {tags}
     }}
     """
@@ -76,6 +75,5 @@ async def create_checkout(quantity: int=1, price: float=18.00, note: str='[{"f":
         raise HTTPException(
             status_code=response.status_code, detail="Error from Shopify API"
         )
-    print(query)
 
     return response.json()
