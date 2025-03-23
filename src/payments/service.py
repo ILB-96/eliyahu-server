@@ -8,7 +8,7 @@ class DonatorsQueryParams(BaseModel):
     
 class DraftOrderParams(BaseModel):
     quantity: int = Field(1, gt=0)
-    price: float = Field(18.00, gt=18.00)
+    price: float = Field(18.00, ge=18.00)
     note: str = '[{"f":"אהרון","m":"שני","g":"בן"}]'
     tags: str = '["שני בן אהרון", "donator"]'
     id: str = "45136044949635"

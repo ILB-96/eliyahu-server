@@ -44,7 +44,7 @@ async def create_checkout(request: Request, data: Annotated[DraftOrderParams, Qu
     input: {{
       lineItems: [{{
         generatePriceOverride: true,
-        variantId: "gid://shopify/ProductVariant/{id}",
+        variantId: "gid://shopify/ProductVariant/{data.id}",
         quantity: {data.quantity},
         priceOverride: {{amount: {data.price}, currencyCode: ILS}}
       }}],
