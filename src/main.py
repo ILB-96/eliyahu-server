@@ -34,7 +34,7 @@ async def lifespan(app: FastAPI):
     app.state.client = client
     yield
     await client.aclose()
-app = FastAPI(lifespan())
+app = FastAPI(lifespan)
 app.state.limiter = limiter
 app.add_exception_handler(RateLimitExceeded, _rate_limit_exceeded_handler)
 app.add_middleware(SlowAPIMiddleware)
