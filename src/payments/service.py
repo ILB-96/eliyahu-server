@@ -1,18 +1,10 @@
-from pydantic import BaseModel, Field, field_validator
+from pydantic import BaseModel, Field
 class DonatorsQueryParams(BaseModel):
     paginationType: str = Field("after", regex="^(after|before)$")
     limit: int = Field(20, gt=0)
-    searchValue: str = None
+    searchValue: str = Field(None, regex=r'^[\u0590-\u05FFa-zA-Z ]*$')
     startCursor: str = None
     endCursor: str = None
-
-    @field_validator("searchValue")
-    def sanitize_search_value(cls, v):
-        # Allow only alphanumeric, spaces, and a few safe punctuation characters.
-        # Adjust the regex as needed for your allowed characters.
-        if v and not all(char.isalnum() or char.isspace() or char in "-_.*" for char in v):
-            raise ValueError("Invalid characters in searchValue")
-        return v
     
 class DraftOrderParams(BaseModel):
     quantity: int = Field(1, gt=0)
