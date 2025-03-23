@@ -1,8 +1,8 @@
 from pydantic import BaseModel, Field
 class DonatorsQueryParams(BaseModel):
-    paginationType: str = Field("after", regex="^(after|before)$")
+    paginationType: str = Field("after", pattern="^(after|before)$")
     limit: int = Field(20, gt=0)
-    searchValue: str = Field(None, regex=r'^[\u0590-\u05FFa-zA-Z ]*$')
+    searchValue: str = Field(None, pattern=r'^[\u0590-\u05FFa-zA-Z ]*$')
     startCursor: str = None
     endCursor: str = None
     
