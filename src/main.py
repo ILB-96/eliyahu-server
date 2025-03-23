@@ -25,7 +25,6 @@ limiter = Limiter(key_func=get_remote_address, default_limits=["10/minute"])
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     client = httpx.AsyncClient(
-        base_url=API_URL,
         verify=True,
         headers={
             "Content-Type": "application/json",
