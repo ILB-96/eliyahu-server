@@ -5,6 +5,7 @@ description = ""
 authors = ["Israel Barmack <israel.bar.dev@gmail.com>"]
 license = "MIT"
 readme = "README.md"
+package = false
 
 [tool.poetry.dependencies]
 python = "^3.12"
