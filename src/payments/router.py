@@ -39,7 +39,7 @@ async def read_donators(
 
 
 @router.get("/draft_order")
-async def create_checkout(request: Request, data: Annotated[DraftOrderParams, Query]):
+async def create_checkout(request: Request, data: Annotated[DraftOrderParams, Query()]):
     params = f"""
     input: {{
       lineItems: [{{
