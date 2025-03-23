@@ -2,12 +2,14 @@ from fastapi import APIRouter, Query, HTTPException, Request
 import httpx
 from . import utils
 from . import ACCESS_TOKEN, API_URL
-from slowapi import Limiter
+from slowapi import Limiter, _rate_limit_exceeded_handler
 from slowapi.util import get_remote_address
+from slowapi.errors import RateLimitExceeded
 
 router = APIRouter()
 limiter = Limiter(key_func=get_remote_address)
-
+router.state.limiter = limiter
+router.add_exception_handler(RateLimitExceeded, _rate_limit_exceeded_handler)
 
 @router.get("/donators")
 @limiter.limit("15/minute")
