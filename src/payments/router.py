@@ -2,15 +2,10 @@ from fastapi import APIRouter, Query, HTTPException, Request
 import httpx
 from . import utils
 from . import ACCESS_TOKEN, API_URL
-from slowapi import Limiter, _rate_limit_exceeded_handler
-from slowapi.util import get_remote_address
-from slowapi.errors import RateLimitExceeded
 
 router = APIRouter()
-limiter = Limiter(key_func=get_remote_address)
 
 @router.get("/donators")
-@limiter.limit("2/minute")
 async def read_donators(
     request: Request,
     paginationType: str = Query("after", regex="^(after|before)$"),
@@ -47,7 +42,6 @@ async def read_donators(
 
 
 @router.get("/draft_order")
-@limiter.limit("5/minute")
 async def create_checkout(request: Request, quantity: int=1, price: float=18.00, note: str='[{"f":"אהרון","m":"שני","g":"בן"}]', tags: str='["שני בן אהרון", "donator"]', id: str= "45136044949635",):
     params = f"""
     input: {{
