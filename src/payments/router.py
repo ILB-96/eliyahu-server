@@ -10,7 +10,7 @@ limiter = Limiter(key_func=get_remote_address)
 
 
 @router.get("/donators")
-@limiter.limit("5/minute", error_message="Too many requests, slow down!")
+@limiter.limit("5/minute")
 async def read_donators(
     request: Request,
     paginationType: str = Query("after", regex="^(after|before)$"),
@@ -47,7 +47,7 @@ async def read_donators(
 
 
 @router.get("/draft_order")
-@limiter.limit("5/minute", error_message="Too many requests, slow down!")
+@limiter.limit("5/minute")
 async def create_checkout(request: Request, quantity: int=1, price: float=18.00, note: str='[{"f":"אהרון","m":"שני","g":"בן"}]', tags: str='["שני בן אהרון", "donator"]', id: str= "45136044949635",):
     params = f"""
     input: {{
