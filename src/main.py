@@ -24,7 +24,7 @@ app.add_middleware(CORSMiddleware,
     allow_methods=["*"],
     allow_headers=["*"],
 )
-app.add_middleware(TrustedHostMiddleware, allowed_hosts="eliyahu-server-e0a45d608135.herokuapp.com")
+app.add_middleware(TrustedHostMiddleware, allowed_hosts=("eliyahu-server-e0a45d608135.herokuapp.com"))
 
 @app.exception_handler(RateLimitExceeded)
 async def rate_limit_handler(request: Request, exc: RateLimitExceeded):
