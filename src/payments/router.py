@@ -4,6 +4,13 @@ from . import utils
 from . import ACCESS_TOKEN, API_URL
 
 router = APIRouter()
+client = httpx.AsyncClient(
+    verify=True,
+    headers={
+        "Content-Type": "application/json",
+        "X-Shopify-Access-Token": ACCESS_TOKEN,
+    },
+)
 
 @router.get("/donators")
 async def read_donators(
@@ -30,8 +37,8 @@ async def read_donators(
         "X-Shopify-Access-Token": ACCESS_TOKEN,
     }
 
-    async with httpx.AsyncClient() as client:
-        response = await client.post(API_URL, headers=headers, json={"query": query})
+
+    response = await client.post(API_URL, headers=headers, json={"query": query})
 
     if response.status_code != 200:
         raise HTTPException(
@@ -67,8 +74,8 @@ async def create_checkout(request: Request, quantity: int=1, price: float=18.00,
         "X-Shopify-Access-Token": ACCESS_TOKEN,
     }
 
-    async with httpx.AsyncClient() as client:
-        response = await client.post(API_URL, headers=headers, json={"query": query})
+    
+    response = await client.post(API_URL, headers=headers, json={"query": query})
 
     if response.status_code != 200:
         raise HTTPException(
@@ -76,3 +83,9 @@ async def create_checkout(request: Request, quantity: int=1, price: float=18.00,
         )
 
     return response.json()
+
+async def shutdown_event():
+    await client.aclose()
+    
+def register_events(app):
+    app.add_event_handler("shutdown", shutdown_event)

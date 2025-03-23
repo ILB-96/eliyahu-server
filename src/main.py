@@ -1,9 +1,8 @@
 import logging
 from fastapi import FastAPI, Request
 from dotenv import load_dotenv
-from .payments import router
+from .payments import router, register_events
 from fastapi.middleware.cors import CORSMiddleware
-from starlette.responses import JSONResponse
 from slowapi.errors import RateLimitExceeded
 from starlette.middleware.trustedhost import TrustedHostMiddleware
 from slowapi import Limiter, _rate_limit_exceeded_handler
@@ -32,6 +31,8 @@ app.add_middleware(CORSMiddleware,
 app.add_middleware(TrustedHostMiddleware, allowed_hosts=["eliyahu-server-e0a45d608135.herokuapp.com"])
 
 app.include_router(router=router)
+register_events(app)
+
 @app.get("/")
 async def root():
     return {"message": "Hello World"}
