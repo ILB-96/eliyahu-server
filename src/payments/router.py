@@ -10,7 +10,7 @@ limiter = Limiter(key_func=get_remote_address)
 
 
 @router.get("/donators")
-@limiter.limit("5/minute")
+@limiter.limit("15/minute")
 async def read_donators(
     request: Request,
     paginationType: str = Query("after", regex="^(after|before)$"),
