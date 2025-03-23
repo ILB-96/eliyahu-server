@@ -22,13 +22,8 @@ async def read_donators(
         "note",
         pageInfo_params=pageInfo_params,
     )
-    headers = {
-        "Content-Type": "application/json",
-        "X-Shopify-Access-Token": ACCESS_TOKEN,
-    }
 
-
-    response = await request.app.state.client.post(API_URL, headers=headers, json={"query": query})
+    response = await request.app.state.client.post(API_URL, json={"query": query})
 
     if response.status_code != 200:
         raise HTTPException(
@@ -59,13 +54,7 @@ async def create_checkout(request: Request, data: Annotated[DraftOrderParams, Qu
         return_params,
     )
     
-    headers = {
-        "Content-Type": "application/json",
-        "X-Shopify-Access-Token": ACCESS_TOKEN,
-    }
-
-    
-    response = await request.app.state.client.post(API_URL, headers=headers, json={"query": query})
+    response = await request.app.state.client.post(API_URL, json={"query": query})
 
     if response.status_code != 200:
         raise HTTPException(
