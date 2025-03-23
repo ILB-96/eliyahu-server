@@ -1,5 +1,6 @@
+from typing import Annotated
 from fastapi import APIRouter, Query, HTTPException, Request
-import httpx
+from src.payments.service import DonatorsQueryParams, DraftOrderParams
 from . import utils
 from . import ACCESS_TOKEN, API_URL
 
@@ -8,16 +9,12 @@ router = APIRouter()
 @router.get("/donators")
 async def read_donators(
     request: Request,
-    paginationType: str = Query("after", regex="^(after|before)$"),
-    limit: int = Query(20, gt=0),
-    searchValue: str = None,
-    startCursor: str = None,
-    endCursor: str = None,
+    data: Annotated[DonatorsQueryParams, Query()]
 ):
-    curr_cursor = utils.set_cursor(paginationType, startCursor, endCursor)
-    first_or_last = f"first: {limit}" if paginationType == "after" else "last: {limit}"
-    curr_search_value = f" AND *{searchValue}" if searchValue else ""
-    query_params = f"{first_or_last}, {paginationType}: {curr_cursor}, query: \"tag:'donator'{curr_search_value}\""
+    curr_cursor = utils.set_cursor(data.paginationType, data.startCursor, data.endCursor)
+    first_or_last = f"first: {data.limit}" if data.paginationType == "after" else f"last: {data.limit}"
+    curr_search_value = f" AND *{data.searchValue}" if data.searchValue else ""
+    query_params = f"{first_or_last}, {data.paginationType}: {curr_cursor}, query: \"tag:'donator'{curr_search_value}\""
     pageInfo_params = "hasNextPage hasPreviousPage startCursor endCursor"
     query = utils.set_query(
         "orders",
@@ -42,17 +39,17 @@ async def read_donators(
 
 
 @router.get("/draft_order")
-async def create_checkout(request: Request, quantity: int=1, price: float=18.00, note: str='[{"f":"אהרון","m":"שני","g":"בן"}]', tags: str='["שני בן אהרון", "donator"]', id: str= "45136044949635",):
+async def create_checkout(request: Request, data: Annotated[DraftOrderParams, Query]):
     params = f"""
     input: {{
       lineItems: [{{
         generatePriceOverride: true,
         variantId: "gid://shopify/ProductVariant/{id}",
-        quantity: {quantity},
-        priceOverride: {{amount: {price}, currencyCode: ILS}}
+        quantity: {data.quantity},
+        priceOverride: {{amount: {data.price}, currencyCode: ILS}}
       }}],
-      note: "{note.replace('"', '\\"')}",
-      tags: {tags}
+      note: "{data.note.replace('"', '\\"')}",
+      tags: {data.tags}
     }}
     """
     return_params = "draftOrder { invoiceUrl }"
