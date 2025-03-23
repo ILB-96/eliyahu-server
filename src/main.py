@@ -1,7 +1,11 @@
+from contextlib import asynccontextmanager
 import logging
-from fastapi import FastAPI, Request
+from fastapi import FastAPI
 from dotenv import load_dotenv
-from .payments import router, register_events
+import httpx
+
+from src.payments.constants import ACCESS_TOKEN
+from .payments import router
 from fastapi.middleware.cors import CORSMiddleware
 from slowapi.errors import RateLimitExceeded
 from starlette.middleware.trustedhost import TrustedHostMiddleware
@@ -18,7 +22,19 @@ logger = logging.getLogger(__name__)
 
 load_dotenv()
 limiter = Limiter(key_func=get_remote_address, default_limits=["10/minute"])
-app = FastAPI()
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    client = httpx.AsyncClient(
+        verify=True,
+        headers={
+            "Content-Type": "application/json",
+            "X-Shopify-Access-Token": ACCESS_TOKEN,
+        },
+    )
+    app.state.client = client
+    yield
+    await client.aclose()
+app = FastAPI(lifespan())
 app.state.limiter = limiter
 app.add_exception_handler(RateLimitExceeded, _rate_limit_exceeded_handler)
 app.add_middleware(SlowAPIMiddleware)
@@ -30,8 +46,9 @@ app.add_middleware(CORSMiddleware,
 )
 app.add_middleware(TrustedHostMiddleware, allowed_hosts=["eliyahu-server-e0a45d608135.herokuapp.com"])
 
+
 app.include_router(router=router)
-register_events(app)
+
 
 @app.get("/")
 async def root():
