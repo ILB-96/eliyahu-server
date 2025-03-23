@@ -4,7 +4,7 @@ from fastapi import FastAPI
 from dotenv import load_dotenv
 import httpx
 
-from src.payments.constants import ACCESS_TOKEN
+from .constants import ACCESS_TOKEN, API_URL
 from .payments import router
 from fastapi.middleware.cors import CORSMiddleware
 from slowapi.errors import RateLimitExceeded
@@ -25,6 +25,7 @@ limiter = Limiter(key_func=get_remote_address, default_limits=["10/minute"])
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     client = httpx.AsyncClient(
+        API_URL,
         verify=True,
         headers={
             "Content-Type": "application/json",

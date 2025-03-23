@@ -2,7 +2,6 @@ from typing import Annotated
 from fastapi import APIRouter, Query, HTTPException, Request
 from src.payments.service import DonatorsQueryParams, DraftOrderParams
 from . import utils
-from . import ACCESS_TOKEN, API_URL
 
 router = APIRouter()
 
@@ -23,7 +22,7 @@ async def read_donators(
         pageInfo_params=pageInfo_params,
     )
 
-    response = await request.app.state.client.post(API_URL, json={"query": query})
+    response = await request.app.state.client.post(json={"query": query})
 
     if response.status_code != 200:
         raise HTTPException(
@@ -54,7 +53,7 @@ async def create_checkout(request: Request, data: Annotated[DraftOrderParams, Qu
         return_params,
     )
     
-    response = await request.app.state.client.post(API_URL, json={"query": query})
+    response = await request.app.state.client.post(json={"query": query})
 
     if response.status_code != 200:
         raise HTTPException(
