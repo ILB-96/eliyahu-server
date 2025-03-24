@@ -1,3 +1,4 @@
+import logging
 from starlette.middleware.gzip import GZipMiddleware
 from starlette.middleware.trustedhost import TrustedHostMiddleware
 from starlette.middleware.base import BaseHTTPMiddleware
@@ -7,7 +8,7 @@ from slowapi.middleware import SlowAPIMiddleware
 from slowapi import _rate_limit_exceeded_handler
 
 from .constants import ORIGIN, URL, HOST
-hosts = (ORIGIN, URL)
+hosts = ("https://www.adrateliyahu.com", URL)
 
 class SecurityHeadersMiddleware(BaseHTTPMiddleware):
     async def dispatch(self, request, call_next):

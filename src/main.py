@@ -42,5 +42,5 @@ app.include_router(router=router)
 
 
 @app.get("/")
-async def root():
-    return {"message": "Hello World"}
+async def root() -> dict[str, str]:
+    return {"message": "Yeshivat Adrat Eliyahu API"}
