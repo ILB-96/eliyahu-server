@@ -6,7 +6,7 @@ from slowapi.errors import RateLimitExceeded
 from slowapi.middleware import SlowAPIMiddleware
 from slowapi import _rate_limit_exceeded_handler
 
-from .constants import HOST
+from .constants import HOST, ORIGIN
 
 class SecurityHeadersMiddleware(BaseHTTPMiddleware):
     async def dispatch(self, request, call_next):
@@ -25,7 +25,7 @@ def add_custom_middlewares(app):
     app.add_middleware(SlowAPIMiddleware)
     app.add_middleware(
         CORSMiddleware,
-        allow_origins=("https://adrateliyahu.com", "https://hsf0dg-uz.myshopify.com"),
+        allow_origins=(ORIGIN, "https://hsf0dg-uz.myshopify.com"),
         allow_credentials=True,
         allow_methods=["*"],
         allow_headers=["*"],
