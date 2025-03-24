@@ -6,8 +6,8 @@ from slowapi.errors import RateLimitExceeded
 from slowapi.middleware import SlowAPIMiddleware
 from slowapi import _rate_limit_exceeded_handler
 
-from .constants import ORIGIN, SHOPIFY_URL, HOST
-hosts = (ORIGIN, SHOPIFY_URL)
+from .constants import ORIGIN, URL, HOST
+hosts = (ORIGIN, URL)
 
 class SecurityHeadersMiddleware(BaseHTTPMiddleware):
     async def dispatch(self, request, call_next):
