@@ -4,7 +4,7 @@ from fastapi import FastAPI
 from dotenv import load_dotenv
 import httpx
 
-from .constants import ACCESS_TOKEN
+from .constants import ACCESS_TOKEN, ORIGIN, URL
 from .payments import router
 from slowapi import Limiter
 from slowapi.util import get_remote_address
@@ -43,4 +43,4 @@ app.include_router(router=router)
 
 @app.get("/")
 async def root() -> dict[str, str]:
-    return {"message": "Yeshivat Adrat Eliyahu API"}
+    return {"message": f"Yeshivat Adrat Eliyahu API {ORIGIN}, {URL}"}
