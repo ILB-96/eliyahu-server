@@ -1,6 +1,5 @@
 from typing import Annotated
 from fastapi import APIRouter, Query, HTTPException, Request
-from src.constants import API_URL
 from src.payments.service import DonatorsQueryParams, DraftOrderParams
 from . import utils
 
@@ -23,14 +22,7 @@ async def read_donators(
         pageInfo_params=pageInfo_params,
     )
 
-    response = await request.app.state.client.post(API_URL, json={"query": query})
-
-    if response.status_code != 200:
-        raise HTTPException(
-            status_code=response.status_code, detail="Error from Shopify API"
-        )
-
-    return response.json()
+    return await utils.post_to_api(query, request) 
 
 
 @router.get("/draft_order")
@@ -53,13 +45,6 @@ async def create_checkout(request: Request, data: Annotated[DraftOrderParams, Qu
         params,
         return_params,
     )
-    
-    response = await request.app.state.client.post(API_URL, json={"query": query})
 
-    if response.status_code != 200:
-        raise HTTPException(
-            status_code=response.status_code, detail="Error from Shopify API"
-        )
-
-    result = response.json()
+    result = await utils.post_to_api(query, request)
     return result["data"]["draftOrderCreate"]
