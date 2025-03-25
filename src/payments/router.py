@@ -30,7 +30,8 @@ async def read_donators(
             status_code=response.status_code, detail="Error from Shopify API"
         )
 
-    return response.json()
+    result = response.json()
+    return result["data"]["orders"]
 
 
 @router.get("/draft_order")
@@ -61,4 +62,5 @@ async def create_checkout(request: Request, data: Annotated[DraftOrderParams, Qu
             status_code=response.status_code, detail="Error from Shopify API"
         )
 
-    return response.json()
+    result = response.json()
+    return result["data"]["draftOrderCreate"]
