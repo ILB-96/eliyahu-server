@@ -4,7 +4,7 @@ from fastapi import FastAPI
 from dotenv import load_dotenv
 import httpx
 
-from .constants import ACCESS_TOKEN, ORIGIN, URL
+from .constants import ACCESS_TOKEN
 from .payments import router
 from slowapi import Limiter
 from slowapi.util import get_remote_address
@@ -31,14 +31,13 @@ async def lifespan(app: FastAPI):
     
     limiter = Limiter(key_func=get_remote_address, default_limits=["10/minute"])
     app.state.limiter = limiter
+    
+    app.include_router(router=router)
     yield
     await client.aclose()
 
 app = FastAPI(lifespan=lifespan)
-
 add_custom_middlewares(app)
-
-app.include_router(router=router)
 
 
 @app.get("/")
