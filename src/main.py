@@ -1,5 +1,4 @@
 from contextlib import asynccontextmanager
-import logging
 from fastapi import FastAPI
 from dotenv import load_dotenv
 import httpx
@@ -9,12 +8,6 @@ from .payments import router
 from slowapi import Limiter
 from slowapi.util import get_remote_address
 from .middlewares import add_custom_middlewares
-
-
-logging.basicConfig(
-    level=logging.DEBUG, format="%(asctime)s - %(name)s - %(levelname)s - %(message)s"
-)
-logger = logging.getLogger(__name__)
 
 load_dotenv()
 
