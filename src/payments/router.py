@@ -21,8 +21,8 @@ async def read_donators(
         "note",
         pageInfo_params=pageInfo_params,
     )
-
-    return await utils.post_to_api(query, request) 
+    result = await utils.post_to_api(query, request)
+    return {"data": result["data"]}
 
 
 @router.get("/draft_order")
