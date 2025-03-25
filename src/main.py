@@ -28,13 +28,13 @@ async def lifespan(app: FastAPI):
         },
     )
     app.state.client = client
+    
+    limiter = Limiter(key_func=get_remote_address, default_limits=["10/minute"])
+    app.state.limiter = limiter
     yield
     await client.aclose()
 
 app = FastAPI(lifespan=lifespan)
-
-limiter = Limiter(key_func=get_remote_address, default_limits=["10/minute"])
-app.state.limiter = limiter
 
 add_custom_middlewares(app)
 
