@@ -30,8 +30,7 @@ async def read_donators(
             status_code=response.status_code, detail="Error from Shopify API"
         )
 
-    result = response.json()
-    return result["data"]["orders"]
+    return response.json()
 
 
 @router.get("/draft_order")
