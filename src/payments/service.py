@@ -1,10 +1,11 @@
+from typing import Optional
 from pydantic import BaseModel, Field
 class DonatorsQueryParams(BaseModel):
     paginationType: str = Field("after", pattern="^(after|before)$")
     limit: int = Field(20, gt=0)
-    searchValue: str = Field(None, pattern=r'^[\u0590-\u05FFa-zA-Z ]*$')
-    startCursor: str = None
-    endCursor: str = None
+    searchValue: Optional[str] = Field(None, pattern=r'^[\u0590-\u05FFa-zA-Z ]*$')
+    startCursor: Optional[str] = None
+    endCursor: Optional[str] = None
     
 class DraftOrderParams(BaseModel):
     quantity: int = Field(1, gt=0)
