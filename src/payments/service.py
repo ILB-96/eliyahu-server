@@ -1,5 +1,5 @@
 from typing import Optional
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, Field, model_validator
 
 from . import utils
 
@@ -55,8 +55,8 @@ class DonatorsQueryParams(BaseModel):
         return self
     
 class DraftOrderParams(BaseModel):
-    quantity: int = Field(1, gt=0)
-    price: float = Field(18.00, ge=18.00)
+    quantity: int = Field(1, ge=1)
+    price: float = Field(18.00)
     note: str = '[{"f":"אהרון","m":"שני","g":"בן"}]'
     tags: str = '["שני בן אהרון", "donator"]'
     id: str = "45136044949635"
@@ -64,6 +64,13 @@ class DraftOrderParams(BaseModel):
     params: Optional[str] = None
     return_params: Optional[str] = None
     mutation: Optional[str] = None
+
+    @model_validator(mode="after")
+    def check_price_vs_quantity(self) -> "DraftOrderParams":
+        if self.price < 18 * self.quantity:
+            raise ValueError(f'Price must be at least 18 per item ({18 * self.quantity})')
+        return self
+
     def set_params(self):
         self.params = f"""
     input: {{
@@ -71,7 +78,7 @@ class DraftOrderParams(BaseModel):
         generatePriceOverride: true,
         variantId: "gid://shopify/ProductVariant/{self.id}",
         quantity: {self.quantity},
-        priceOverride: {{amount: {self.price}, currencyCode: ILS}}
+        priceOverride: {{amount: {round(self.price / self.quantity, 2)}, currencyCode: ILS}}
       }}],
       note: "{self.note.replace('"', '\\"')}",
       tags: {self.tags}
