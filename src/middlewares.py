@@ -14,7 +14,6 @@ from .constants import HOST, ORIGIN, URL
 class EnforceAllowedOriginsMiddleware(BaseHTTPMiddleware):
     async def dispatch(self, request, call_next):
         origin = request.headers.get("origin") or request.headers.get("referer")
-        print(request.headers)
         if origin is None or not any(origin.startswith(o) for o in (ORIGIN, URL)):
             return JSONResponse(
                 {"detail": "Origin not allowed"},
