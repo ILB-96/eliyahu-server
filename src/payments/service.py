@@ -50,7 +50,7 @@ class DonatorsQueryParams(BaseModel):
             "orders",
             self.query_params,
             "note",
-            pageInfo_params=self.page_info_params,
+            page_info_params=self.page_info_params,
         )
         return self
     

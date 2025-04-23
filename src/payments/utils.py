@@ -8,7 +8,7 @@ def set_cursor(pagination_type, start_cursor, end_cursor):
     return f'"{start_cursor}"' if start_cursor else "null"
 
 
-def set_query(table_name, params, node_params, pageInfo_params):
+def set_query(table_name, params, node_params, page_info_params):
     return f"""
     query {{
       {table_name}({params}) {{
@@ -18,11 +18,12 @@ def set_query(table_name, params, node_params, pageInfo_params):
           }}
         }}
         pageInfo {{
-          {pageInfo_params}
+          {page_info_params}
         }}
       }}
     }}
     """
+
 def set_mutation(table_name, params, return_params):
     return f"""
     mutation {{
